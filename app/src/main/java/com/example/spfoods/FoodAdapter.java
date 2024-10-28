@@ -8,15 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
     private Context context;
     private List<Food> foodList;
+    private String storeImageUrl; // Add store image URL
 
-    public FoodAdapter(Context context, List<Food> foodList) {
+    // Update constructor to include storeImageUrl
+    public FoodAdapter(Context context, List<Food> foodList, String storeImageUrl) {
         this.context = context;
         this.foodList = foodList;
+        this.storeImageUrl = storeImageUrl;
     }
 
     @NonNull
@@ -29,10 +33,14 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
         Food food = foodList.get(position);
-        holder.foodNameTextView.setText(food.getFood_name()); // Ensure this matches your Food class
-        holder.foodPriceTextView.setText(String.valueOf(food.getFood_price())); // Assuming getFood_price returns a number
-        // Load image using Glide or Picasso if you have an image URL
-        // Glide.with(context).load(food.getImg_url()).into(holder.foodImageView);
+        holder.foodNameTextView.setText(food.getFood_name());
+        holder.foodPriceTextView.setText(String.valueOf(food.getFood_price()));
+
+        // Load the individual food image
+        Glide.with(context).load(food.getImg_url()).into(holder.foodImageView);
+
+        // Load the store image (same for each item)
+        Glide.with(context).load(storeImageUrl).into(holder.storeImageView);
     }
 
     @Override
@@ -43,13 +51,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         TextView foodNameTextView;
         TextView foodPriceTextView;
-        ImageView foodImageView; // Assuming you want to show an image
+        ImageView foodImageView;
+        ImageView storeImageView; // ImageView for the store image
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             foodNameTextView = itemView.findViewById(R.id.food_name);
             foodPriceTextView = itemView.findViewById(R.id.food_price);
-            foodImageView = itemView.findViewById(R.id.food_image); // Assuming you have an ImageView for food images
+            foodImageView = itemView.findViewById(R.id.food_image);
+            storeImageView = itemView.findViewById(R.id.store_image); // Ensure this ID matches item_food.xml
         }
     }
 }
